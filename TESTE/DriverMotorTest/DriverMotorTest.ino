@@ -1,6 +1,6 @@
 //pin-urile digitale pentru motor stanga
-#define LDIR 1
-#define LPWM 1
+#define LDIR 4
+#define LPWM 3
 
 #define BI0 1
 #define BI1 1
@@ -109,7 +109,8 @@ void setPowerL(float speed) // viteza pins:in1 in2 pwm
 
 void loop() {
   // put your main code here, to run repeatedly:
-  setPowerR(0.4);
+  setPowerR(1);
+  setPowerL(1);
   Serial.print("sugi pula");
   Serial.println();
 }
