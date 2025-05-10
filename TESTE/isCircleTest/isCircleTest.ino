@@ -87,16 +87,7 @@ void setPowerL(float speed) // viteza pins:in1 in2 pwm
 
 void loop() {
   // put your main code here, to run repeatedly:
-  //setPowerL(0.5);
-  //setPowerR(0.5);
-  digitalWrite(L1, HIGH);
-  digitalWrite(L2, LOW);
-  analogWrite(LPWM, 50);
-  digitalWrite(R1, LOW);
-  digitalWrite(R2, HIGH);
-  analogWrite(RPWM, 50);
-  //digitalWrite(RPWM, HIGH);
-  
-  Serial.print("sugi pula");
+  setPowerL(1);
+  setPowerR(0.5);
   Serial.println();
 }
