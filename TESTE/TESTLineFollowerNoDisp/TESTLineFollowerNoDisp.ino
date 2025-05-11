@@ -26,7 +26,7 @@ int maxSensor[7]={0,0,0,0,0,0,0};
 int sensor[7];
 float weights[7] = {3.2, 2, 1, 0, -1, -2, -3.2};
 float totalWeight = 0;
-float DISPERSION_THRESHOLD;
+bool Delay;
 
 void init_PID(PIDController *pid, double kp, double ki, double kd)
 {
@@ -122,9 +122,9 @@ void sensorCalibration(){
   }
   Serial.print("Calibrarea a fost finalizata!");
   delay(1000);
-} 
+}
 
-//luam valorile de la senzori, facem media pentru PID si calculam dispersia + BIAS
+//luam valorile de la senzori, facem media pentru PID
 int weightedValuePID(){
   weightedSum=0;
   for(int i=0; i<7; i++){
@@ -132,29 +132,6 @@ int weightedValuePID(){
     weightedSum += sensor[i] * weights[i];
     totalWeight += sensor[i];
   }
-
-  //calculam dispersia senzorilor fata de linie
-  float com=0; //center of mass
-  //suma senzorilor fara pondere
-  for(int i=0; i<7; i++){
-    totalWeight += sensor[i];
-  }
-  if(totalWeight>0) {
-    com = weightedSum/totalWeight; //Pozitia medie a liniei
-  }
-  float dispersion = 0;
-  if (totalWeight > 0) {
-    for (int i = 0; i < 7; i++) {
-        float diff = weights[i] - com;
-        dispersion += sensor[i] * diff * diff;
-    }
-    dispersion /= totalWeight;
-  }
-  if(dispersion>DISPERSION_THRESHOLD){
-    return 800;
-  }
-  
-
   //ALEGE PE CE PARTE E BIAS-UL 
   //stanga
   if(sensor[0]+sensor[3]>120 || sensor[0]+sensor[2]>120 || sensor[1]+sensor[3]>120){
@@ -203,9 +180,9 @@ void setup() {
   init_PID(&pid, 0.023, 0.0001, 0.000013);
   speed = 0.26;
   bias = 0.3; // înclină decizia către stanga la intersecții
+  Delay=false; //pentru iesirea din giratoriu/cruce
   //35
   time=90; //timpul in care dam override la PID
-  DISPERSION_THRESHOLD=2;
 }
 
 void loop() {
@@ -218,12 +195,7 @@ void loop() {
   lastTime = now;
 
   double A=update_PID(&pid, 0, weightedValuePID(), dt);
-    if(A==800){
-      setPowerL(speed);
-      setPowerR(speed);
-      delay(40);
-    }
-    else if(A>-0.03 && A<0.03){
+    if(A>-0.03 && A<0.03){
         setPowerL(speed);
         setPowerR(speed);
     }

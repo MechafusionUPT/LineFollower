@@ -1,12 +1,12 @@
 //pin-urile digitale pentru motor stanga
 #define L1 3
 #define L2 4
-#define LPWM 5
+#define LPWM 6
 
 //pin-urile digitale pentru motor dreapta
 #define R1 11
 #define R2 12
-#define RPWM 6
+#define RPWM 5
 
 
 
@@ -89,11 +89,11 @@ void loop() {
   // put your main code here, to run repeatedly:
   //setPowerL(0.5);
   //setPowerR(0.5);
-  digitalWrite(L1, HIGH);
-  digitalWrite(L2, LOW);
-  analogWrite(LPWM, 50);
-  digitalWrite(R1, LOW);
-  digitalWrite(R2, HIGH);
+  //digitalWrite(L1, HIGH);
+  //digitalWrite(L2, LOW);
+  //analogWrite(LPWM, 50);
+  digitalWrite(R1, HIGH);
+  digitalWrite(R2, LOW);
   analogWrite(RPWM, 50);
   //digitalWrite(RPWM, HIGH);
   

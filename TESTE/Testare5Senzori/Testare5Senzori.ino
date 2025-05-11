@@ -7,12 +7,13 @@ void setup() {
   pinMode(A2, INPUT);
   pinMode(A1, INPUT);
   pinMode(A0, INPUT);
+  //pinMode(A5, INPUT);
 }
 
 
-void loop() {
+/*void loop() {
   // put your main code here, to run repeatedly:
-  for(int pin=14; pin<21; pin++)
+  for(int pin=0; pin<7; pin++)
   { 
     int val = analogRead(pin);
     Serial.print(val);
@@ -21,16 +22,16 @@ void loop() {
   }
   delay(500);
   Serial.println();
-}
+}*/
 
 
-/*void loop(){
+void loop(){
 
-    int val = analogRead(A6);
+    int val = analogRead(A7);
     Serial.print(val);
     Serial.print(" ");
     delay(100);
 
     Serial.println();
 
-}*/
+}
