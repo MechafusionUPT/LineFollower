@@ -12,7 +12,7 @@ typedef struct
     double kp, ki, kd;
     int prev_error;
     int integral;
-} PIDController;
+}PIDController;
 
 int weightedSum=0; //pentru a calcula suma senzorilor
 unsigned int lastTime=0;
@@ -120,7 +120,7 @@ void sensorCalibration(){
         minSensor[i]=aux;
     }
   }
-  Serial.print("Calibrarea a fost finalizata!");
+  //Serial.print("Calibrarea a fost finalizata!");
   delay(1000);
 } 
 
@@ -199,18 +199,18 @@ void setup() {
   //Mutati robotul pe deasupra liniei pentru 5 secunde (pana incep motoarele sa functioneze)
   sensorCalibration();
 
+  //POT FI SCHIMBATE
   //D: 0.000018
   init_PID(&pid, 0.023, 0.0001, 0.000013);
   speed = 0.26;
-  bias = 0.3; // înclină decizia către stanga la intersecții
+  bias = 0.3; // Viteza cu care creste in cazul de giratoriu
   //35
   time=90; //timpul in care dam override la PID
   DISPERSION_THRESHOLD=2;
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-  
+  //calculeaza timpul dintre loop-uri
   unsigned int now = millis();
   double dt = (now - lastTime) / 10000.0; 
   //Serial.print("DT: ");
@@ -218,20 +218,20 @@ void loop() {
   lastTime = now;
 
   double A=update_PID(&pid, 0, weightedValuePID(), dt);
-    if(A==800){
+    if(A==800){ //impuls in fata
       setPowerL(speed);
       setPowerR(speed);
       delay(40);
     }
-    else if(A>-0.03 && A<0.03){
+    else if(A>-0.03 && A<0.03){ //inainte
         setPowerL(speed);
         setPowerR(speed);
     }
-    else if(A<0){
+    else if(A<0){ //dreapta
       setPowerL(speed); //L - low
       setPowerR(speed+A); // R - high
     }
-    else{
+    else{ //stanga
       setPowerL(speed-A); //L - high
       setPowerR(speed); // R - low
     }

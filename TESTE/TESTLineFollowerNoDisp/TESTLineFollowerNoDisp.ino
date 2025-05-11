@@ -120,7 +120,7 @@ void sensorCalibration(){
         minSensor[i]=aux;
     }
   }
-  Serial.print("Calibrarea a fost finalizata!");
+  //Serial.print("Calibrarea a fost finalizata!");
   delay(1000);
 }
 
@@ -176,18 +176,16 @@ void setup() {
   //Mutati robotul pe deasupra liniei pentru 5 secunde (pana incep motoarele sa functioneze)
   sensorCalibration();
 
+  //VALORI DE SCHIMBAT
   //D: 0.000018
   init_PID(&pid, 0.023, 0.0001, 0.000013);
   speed = 0.26;
   bias = 0.3; // înclină decizia către stanga la intersecții
   Delay=false; //pentru iesirea din giratoriu/cruce
-  //35
   time=90; //timpul in care dam override la PID
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-  
   unsigned int now = millis();
   double dt = (now - lastTime) / 10000.0; 
   //Serial.print("DT: ");

@@ -97,6 +97,6 @@ void loop() {
   analogWrite(RPWM, 50);
   //digitalWrite(RPWM, HIGH);
   
-  Serial.print("sugi pula");
+  Serial.print("merge");
   Serial.println();
 }

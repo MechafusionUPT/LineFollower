@@ -1,5 +1,5 @@
-#define TRIG_PIN 9  // Pinul TRIG conectat la pinul 9
-#define ECHO_PIN 10 // Pinul ECHO conectat la pinul 10
+#define TRIG_PIN 9  // Pinul TRIG conectat la pinul 9 digital
+#define ECHO_PIN 10 // Pinul ECHO conectat la pinul 10 digital
 
 // Funcția pentru a măsura distanța
 float citesteDistanta() {
