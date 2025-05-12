@@ -1,13 +1,10 @@
-// Configurare 
-
-// Numărul total de senzori
-#define NUM_SENSORS 14
-
 // Prag pentru detectarea liniei
-const int threshold = 1000; // Ajustează acest prag în funcție de condițiile suprafeței
 int weightedSum=0; //pentru a calcula suma senzorilor
+int minSensor[7]={1023, 1023, 1023, 1023, 1023, 1023, 1023};
+int maxSensor[7]={0,0,0,0,0,0,0};
+int sensor[7];
+float weights[7] = {3.2, 2, 1, 0, -1, -2, -3.2};
 
-int k=4; //de schimbat
 
 void setup() {
   // Configurare pini
@@ -18,8 +15,6 @@ void setup() {
   pinMode(A2, INPUT);
   pinMode(A1, INPUT);
   pinMode(A0, INPUT);
-  pinMode(2, OUTPUT);
-  digitalWrite(2, HIGH);
 
   // Pornire comunicare serială
   Serial.begin(9600);
@@ -28,30 +23,31 @@ void setup() {
 
 void loop() {
   Serial.println(weightedValuePID());
-  
   delay(100);
 }
 
+void sensorCalibration(){
+  while(millis()<5000){
+    for(int i=0; i<7; i++){
+      int aux=analogRead(14+i);
+      if(aux>maxSensor[i])
+        maxSensor[i]=aux;
+      if(aux<minSensor[i])
+        minSensor[i]=aux;
+    }
+  }
+  Serial.print("Calibrarea a fost finalizata!");
+  delay(1000);
+} 
+
 //luam valorile de la senzori, facem media pentru PID
 int weightedValuePID(){
-  weightedSum += 4 * analogRead(14);
   weightedSum=0;
-  for(int i=15; i<17; i++){
-    weightedSum += (17-i) * analogRead(i);
-  }
-    weightedSum -= 4 * analogRead(18);
-  for(int i=19; i<21; i++){
-    weightedSum -= (i-17) * analogRead(i);
+  for(int i=0; i<7; i++){
+    sensor[i]=(map(analogRead(i+14), minSensor[i], maxSensor[i], 0, 100));
+    weightedSum += sensor[i] * weights[i];
+    totalWeight += sensor[i];
   }
   return constrain(weightedSum/6, -700, 700);
-}
-
-
-int update_PID(PIDController *pid, int setpoint, int measured_value, double dt) {
-  double error = setpoint - measured_value;
-  pid->integral += error * dt;
-  double derivative = (error - pid->prev_error) / dt;
-  double output = (pid->kp * error) + (pid->ki * pid->integral) + (pid->kd * derivative);
-  pid->prev_error = error;
 }
 

@@ -1,3 +1,4 @@
+//alb~40 negru~800-1000
 void setup() {
   Serial.begin(9600);
   pinMode(A6, INPUT); //Senzor 0
@@ -7,12 +8,12 @@ void setup() {
   pinMode(A2, INPUT);
   pinMode(A1, INPUT);
   pinMode(A0, INPUT);
+  //pinMode(A5, INPUT);
 }
 
-
-void loop() {
-  // put your main code here, to run repeatedly:
-  for(int pin=14; pin<21; pin++)
+//verificare toti senzori
+/*void loop() {
+  for(int pin=0; pin<7; pin++)
   { 
     int val = analogRead(pin);
     Serial.print(val);
@@ -21,16 +22,15 @@ void loop() {
   }
   delay(500);
   Serial.println();
-}
+}*/
 
+//verificare 1 senzor
+void loop(){
 
-/*void loop(){
-
-    int val = analogRead(A6);
-    Serial.print(val);
-    Serial.print(" ");
+    int val = analogRead(A7);//A0, A1... A6
+    Serial.println(val);
     delay(100);
 
     Serial.println();
 
-}*/
+}

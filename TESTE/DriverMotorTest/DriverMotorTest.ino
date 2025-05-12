@@ -1,33 +1,28 @@
 //pin-urile digitale pentru motor stanga
-#define LDIR 4
-#define LPWM 3
+#define L1 3
+#define L2 4
+#define LPWM 6
 
-#define BI0 1
-#define BI1 1
 //pin-urile digitale pentru motor dreapta
-#define RDIR 12
-#define RPWM 11
-#define AI0 7
-#define AI1 8
+#define R1 11
+#define R2 12
+#define RPWM 5
+
 
 
 void setup() {
   //Configurare pini motoare
   //Dreapta
-  pinMode(RDIR, OUTPUT);
+  pinMode(R1, OUTPUT);
+  pinMode(R2, OUTPUT);
   pinMode(RPWM, OUTPUT);
-  pinMode(AI0, OUTPUT);
-  pinMode(AI1, OUTPUT);
-  digitalWrite(AI0, 0);
-  digitalWrite(AI1, 0);
+  
   //Stanga
-  pinMode(LDIR, OUTPUT);
+  pinMode(L1, OUTPUT);
+  pinMode(L2, OUTPUT);
   pinMode(LPWM, OUTPUT);
-  pinMode(BI0, OUTPUT);
-  pinMode(BI1, OUTPUT);
 
-  pinMode(2, OUTPUT);
-  digitalWrite(2, HIGH);
+  
   
   //set internal current pulldown
   //00-100%
@@ -45,45 +40,25 @@ void setPowerR(float speed)
         if (speed > 0)
         {                                    // Merge înainte
             int pwmValue = abs(speed) * 255; // Convertim viteza la PWM (0 - 255)
-            digitalWrite(RDIR, LOW);
+            digitalWrite(R1, LOW);
+            digitalWrite(R2, HIGH);
             analogWrite(RPWM, pwmValue);
         }
         else if (speed < 0)
         {                                    // Merge înapoi
             int pwmValue = abs(speed) * 255; // Convertim viteza la PWM (0 - 255)
-            digitalWrite(RDIR, HIGH);
+            digitalWrite(R1, HIGH);
+            digitalWrite(R2, LOW);
             analogWrite(RPWM, pwmValue);
         }
         else
         { // Oprire
-            digitalWrite(RDIR, LOW);
+            digitalWrite(R1, LOW);
+            digitalWrite(R2, LOW);
             analogWrite(RPWM, 0);
         }
 }
 
-void setPowerR(float speed, unsigned int currentAI) //currentAI trebuie sa fie 0,1,2,3
-{
-        digitalWrite(AI0, currentAI%2);
-        digitalWrite(AI1, currentAI>>1%2);
-        speed = constrain(speed, -1.0, 1.0); // Limităm viteza la intervalul [-1, 1]
-        if (speed > 0)
-        {                                    // Merge înainte
-            int pwmValue = abs(speed) * 255; // Convertim viteza la PWM (0 - 255)
-            digitalWrite(RDIR, LOW);
-            analogWrite(RPWM, pwmValue);
-        }
-        else if (speed < 0)
-        {                                    // Merge înapoi
-            int pwmValue = abs(speed) * 255; // Convertim viteza la PWM (0 - 255)
-            digitalWrite(RDIR, HIGH);
-            analogWrite(RPWM, pwmValue);
-        }
-        else
-        { // Oprire
-            digitalWrite(RDIR, LOW);
-            analogWrite(RPWM, 0);
-        }
-}
 
 void setPowerL(float speed) // viteza pins:in1 in2 pwm
 {
@@ -91,26 +66,37 @@ void setPowerL(float speed) // viteza pins:in1 in2 pwm
         if (speed > 0)
         {                                    // Merge înainte
             int pwmValue = abs(speed) * 255; // Convertim viteza la PWM (0 - 255)
-            digitalWrite(LDIR, LOW);
+            digitalWrite(L1, LOW);
+            digitalWrite(L2, HIGH);
             analogWrite(LPWM, pwmValue);
         }
         else if (speed < 0)
         {                                    // Merge înapoi
             int pwmValue = abs(speed) * 255; // Convertim viteza la PWM (0 - 255)
-            digitalWrite(LDIR, HIGH);
+            digitalWrite(L1, HIGH);
+            digitalWrite(L2, LOW);
             analogWrite(LPWM, pwmValue);
         }
         else
         { // Oprire
-            digitalWrite(LDIR, LOW);
+            digitalWrite(L1, LOW);
+            digitalWrite(L2, LOW);
             analogWrite(LPWM, 0);
         }
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
-  setPowerR(1);
-  setPowerL(1);
-  Serial.print("sugi pula");
+  //setPowerL(0.5);
+  //setPowerR(0.5);
+  //digitalWrite(L1, HIGH);
+  //digitalWrite(L2, LOW);
+  //analogWrite(LPWM, 50);
+  digitalWrite(R1, HIGH);
+  digitalWrite(R2, LOW);
+  analogWrite(RPWM, 50);
+  //digitalWrite(RPWM, HIGH);
+  
+  Serial.print("merge");
   Serial.println();
 }
