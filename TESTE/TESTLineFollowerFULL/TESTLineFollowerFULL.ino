@@ -24,11 +24,7 @@ int time;
 int minSensor[7]={1023, 1023, 1023, 1023, 1023, 1023, 1023};
 int maxSensor[7]={0,0,0,0,0,0,0};
 int sensor[7];
-<<<<<<< HEAD
 float weights[7] = {-3.2, -2, -1, 0, 1, 2, 3.2};
-=======
-float weights[7] = {3.2, 2, 1, 0, -1, -2, -3.2};
->>>>>>> 400a8640bc09e235f541f4401155c0782fafe4c4
 float totalWeight = 0;
 float DISPERSION_THRESHOLD;
 
@@ -54,11 +50,7 @@ double update_PID(PIDController *pid, int setpoint, int measured_value, double d
     Serial.print("I: ");
     Serial.println(pid->integral);*/
     double derivative = (error - pid->prev_error) / dt;
-<<<<<<< HEAD
     //if(derivative>maxD) maxD=derivative;
-=======
-    if(derivative>maxD) maxD=derivative;
->>>>>>> 400a8640bc09e235f541f4401155c0782fafe4c4
     /*Serial.print("D: ");
     Serial.println(derivative);
     Serial.print("maxD: ");
@@ -72,22 +64,14 @@ double update_PID(PIDController *pid, int setpoint, int measured_value, double d
 void setPowerL(float speed) //pentru motoare (NU SCHIMBA)
 {
         speed = constrain(speed, -1.0, 1.0); // Limităm viteza la intervalul [-1, 1]
-<<<<<<< HEAD
         if (speed < -0.14)
-=======
-        if (speed > 0.14)
->>>>>>> 400a8640bc09e235f541f4401155c0782fafe4c4
         {                                    // Merge înainte
             int pwmValue = abs(speed) * 255; // Convertim viteza la PWM (0 - 255)
             digitalWrite(L1, HIGH);
             digitalWrite(L2, LOW);
             analogWrite(LPWM, pwmValue);
         }
-<<<<<<< HEAD
         else if (speed > 0.14)
-=======
-        else if (speed < -0.14)
->>>>>>> 400a8640bc09e235f541f4401155c0782fafe4c4
         {                                    // Merge înapoi
             int pwmValue = abs(speed) * 255; // Convertim viteza la PWM (0 - 255)
             digitalWrite(L1, LOW);
@@ -104,22 +88,14 @@ void setPowerL(float speed) //pentru motoare (NU SCHIMBA)
 void setPowerR(float speed) //pentru motoare (NU SCHIMBA)
 {
         speed = constrain(speed, -1.0, 1.0); // Limităm viteza la intervalul [-1, 1]
-<<<<<<< HEAD
         if (speed < -0.14)
-=======
-        if (speed > 0.14)
->>>>>>> 400a8640bc09e235f541f4401155c0782fafe4c4
         {                                    // Merge înainte
             int pwmValue = abs(speed) * 255; // Convertim viteza la PWM (0 - 255)
             digitalWrite(R1, HIGH);
             digitalWrite(R2, LOW);
             analogWrite(RPWM, pwmValue);
         }
-<<<<<<< HEAD
         else if (speed > 0.14)
-=======
-        else if (speed < -0.14)
->>>>>>> 400a8640bc09e235f541f4401155c0782fafe4c4
         {                                    // Merge înapoi
             int pwmValue = abs(speed) * 255; // Convertim viteza la PWM (0 - 255)
             digitalWrite(R1, LOW);
@@ -155,30 +131,6 @@ int weightedValuePID(){
     sensor[i]=(map(analogRead(i+14), minSensor[i], maxSensor[i], 0, 100));
     weightedSum += sensor[i] * weights[i];
     totalWeight += sensor[i];
-<<<<<<< HEAD
-=======
-  }
-
-  //calculam dispersia senzorilor fata de linie
-  float com=0; //center of mass
-  //suma senzorilor fara pondere
-  for(int i=0; i<7; i++){
-    totalWeight += sensor[i];
-  }
-  if(totalWeight>0) {
-    com = weightedSum/totalWeight; //Pozitia medie a liniei
-  }
-  float dispersion = 0;
-  if (totalWeight > 0) {
-    for (int i = 0; i < 7; i++) {
-        float diff = weights[i] - com;
-        dispersion += sensor[i] * diff * diff;
-    }
-    dispersion /= totalWeight;
-  }
-  if(dispersion>DISPERSION_THRESHOLD){
-    return 800;
->>>>>>> 400a8640bc09e235f541f4401155c0782fafe4c4
   }
 
 /*  //calculam dispersia senzorilor fata de linie
@@ -250,19 +202,11 @@ void setup() {
 
   //POT FI SCHIMBATE
   //D: 0.000018
-<<<<<<< HEAD
   init_PID(&pid, 0.025, 0.00015, 0.000013);
   speed = 0.24;
   bias = 0.3; // Viteza cu care creste in cazul de giratoriu
   //35
   time=100; //timpul in care dam override la PID
-=======
-  init_PID(&pid, 0.023, 0.0001, 0.000013);
-  speed = 0.26;
-  bias = 0.3; // Viteza cu care creste in cazul de giratoriu
-  //35
-  time=90; //timpul in care dam override la PID
->>>>>>> 400a8640bc09e235f541f4401155c0782fafe4c4
   DISPERSION_THRESHOLD=2;
 }
 
