@@ -19,32 +19,45 @@ float citesteDistanta() {
   return distance;
 }
 
+typedef struct //NU MODIFICA
+{
+    double kp, ki, kd;
+    float prev_error;
+    float integral;
+}PIDController;
+
+void init_PID(PIDController *pid, double kp, double ki, double kd)
+{
+    pid->kp = kp;
+    pid->ki = ki;
+    pid->kd = kd;
+    pid->prev_error = 0.0;
+    pid->integral = 0.0;
+}
+
+float update_PID(PIDController *pid, float setpoint, float measured_value, double dt) //DIFERIT DE CEL NORMAL
+{
+    float error = setpoint - measured_value;
+    pid->integral += error * dt;
+    pid->integral=constrain(pid->integral, -200, 200);
+    float derivative = (error - pid->prev_error) / dt;
+    float corectie = (pid->kp * error) + (pid->ki * pid->integral) + (pid->kd * derivative);
+    pid->prev_error = error;
+    
+    return corectie;
+  }
+
+PidController pidWall;
+float targetPosition=10;
+
 void setup() {
-  Serial.begin(9600);   // Inițializează comunicarea serială
   pinMode(TRIG_PIN, OUTPUT); // Setează TRIG ca ieșire
   pinMode(ECHO_PIN, INPUT);  // Setează ECHO ca intrare
+  init_PID(pidWall, 1, 0, 0); //Modificati Kp Ki Kd (D TREBUIE IGNORAT)
 }
 
 long lastDist=0;
 void loop() {
-  // Citește distanța și o afișează
   long dist = citesteDistanta();
-  Serial.print(dist);
-  if(dist>lastDist){
-    //setPowerL(speedWall+0.04);
-    //setPowerR(speedWall);
-    Serial.println("Stanga");
-  }
-  else if(dist<lastDist){
-    //setPowerL(speedWall);
-    //setPowerR(speedWall+0.04);
-    Serial.println("Dreapta");
-  }
-  else{
-    //setPowerL(speeWall);
-    //setPowerR(speedWall);
-    Serial.println("Inainte");
-  }
-  lastDist=dist;
-  delay(100);// Pauză de 500 ms înainte de următoarea măsurătoare
+  floatA=update_PID(pidWall, 10.0, dist)
 }
