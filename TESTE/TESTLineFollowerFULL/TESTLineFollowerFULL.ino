@@ -37,8 +37,23 @@ void init_PID(PIDController *pid, double kp, double ki, double kd)
     pid->integral = 0.0;
 }
 
+bool pairs()
+{
+  for(int i=0; i<3; i++)
+    if(sensor[i] + sensor[7-i] > 120) 
+      return true;
+
+  return false;
+}
+
 double update_PID(PIDController *pid, int setpoint, int measured_value, double dt)
 {
+  //Serial.print("M:");
+  //Serial.println(measured_value);
+  if(measured_value==800){
+    return 800;
+  }
+  else{
     int error = setpoint - measured_value;
     //if(error>maxP) maxP=error;
     pid->integral += error * dt;
@@ -59,6 +74,8 @@ double update_PID(PIDController *pid, int setpoint, int measured_value, double d
     pid->prev_error = error;
     
     return corectie;
+  }
+    
 }
 
 void setPowerL(float speed) //pentru motoare (NU SCHIMBA)
@@ -127,35 +144,35 @@ void sensorCalibration(){
 //luam valorile de la senzori, facem media pentru PID si calculam dispersia + BIAS
 int weightedValuePID(){
   weightedSum=0;
+  totalWeight = 0;
   for(int i=0; i<7; i++){
     sensor[i]=(map(analogRead(i+14), minSensor[i], maxSensor[i], 0, 100));
     weightedSum += sensor[i] * weights[i];
     totalWeight += sensor[i];
   }
-
-/*  //calculam dispersia senzorilor fata de linie
-  float com=0; //center of mass
-  //suma senzorilor fara pondere
-  for(int i=0; i<7; i++){
-    totalWeight += sensor[i];
-  }
-  if(totalWeight>0) {
-    com = weightedSum/totalWeight; //Pozitia medie a liniei
-  }
+  //calculam dispersia senzorilor fata de linie
+  /*float com=0; //center of mass
   float dispersion = 0;
-  if (totalWeight > 0) {
+  if(totalWeight>200) {
+    com = weightedSum/totalWeight; //Pozitia medie a liniei
+
     for (int i = 0; i < 7; i++) {
         float diff = weights[i] - com;
         dispersion += sensor[i] * diff * diff;
     }
     dispersion /= totalWeight;
-  }
-  if(dispersion>DISPERSION_THRESHOLD){
-    return 800;
-  }
-*/
+  }*/
+ 
+ /*
+  Serial.print("Disp: ");
+  Serial.println(dispersion);
+  Serial.print("TWeight: ");
+  Serial.println(totalWeight);
+  */
   
-
+  /*if(dispersion >= 0.60 && dispersion<=1){
+    return 800;
+  }*/
   //ALEGE PE CE PARTE E BIAS-UL 
   //stanga
   if(sensor[0]+sensor[3]>120 || sensor[0]+sensor[2]>120 || sensor[1]+sensor[3]>120){
@@ -170,7 +187,7 @@ int weightedValuePID(){
     delay(time);
   }*/
   else
-    return constrain(weightedSum/6, -700, 700);
+    return constrain(weightedSum/5, -700, 700);
   /**/
 }
 
@@ -201,10 +218,10 @@ void setup() {
   sensorCalibration();
 
   //POT FI SCHIMBATE
-  //D: 0.000018
-  init_PID(&pid, 0.025, 0.00015, 0.000013);
-  speed = 0.24;
-  bias = 0.3; // Viteza cu care creste in cazul de giratoriu
+  //I: 0.00015
+  init_PID(&pid, 0.023, 0.002, 0.000008); //0.025 , 0.002 0.000013
+  speed = 0.225;
+  bias = 0.33; // Viteza cu care creste in cazul de giratoriu
   //35
   time=100; //timpul in care dam override la PID
   DISPERSION_THRESHOLD=2;
@@ -221,10 +238,10 @@ void loop() {
   double A=update_PID(&pid, 0, weightedValuePID(), dt);
     if(A==800){ //impuls in fata
       setPowerL(speed);
-      setPowerR(speed);
-      delay(40);
+      setPowerR(speed+bias);
+      delay(time);
     }
-    else if(A>-0.03 && A<0.03){ //inainte
+    else if((A>-0.03 && A<0.03)){ //inainte
         setPowerL(speed);
         setPowerR(speed);
     }
