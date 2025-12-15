@@ -223,7 +223,7 @@ void setup() {
   speed = 0.225;
   bias = 0.33; // Viteza cu care creste in cazul de giratoriu
   //35
-  time=100; //timpul in care dam override la PID
+  time=100; //timpul in care dam override la PID (ms)
   DISPERSION_THRESHOLD=2;
 }
 
