@@ -24,17 +24,20 @@
 #define RED 9
 
 // ─── PID tuning ───────────────────────────────────────────────────────────────
-#define PID_KP  0.008
-#define PID_KI  0.00005
-#define PID_KD  0.0000035
+// #define PID_KP  0.003
+// #define PID_KI  0.00008
+// #define PID_KD  0.00075
+#define PID_KP  0.003
+#define PID_KI  0
+#define PID_KD  0.000001
 
 // ─── Motion parameters ────────────────────────────────────────────────────────
-#define BASE_SPEED        0.4f   // viteza de baza [0.0 - 1.0]
+#define BASE_SPEED        0.5f   // viteza de baza [0.0 - 1.0]
 #define MOTOR_DEADBAND    0.14f  // sub aceasta valoare motorul sta pe loc
-#define OVERRIDE_TIME_MS  90     // ms de override PID la intrare cerc
+#define OVERRIDE_TIME_MS  70     // ms de override PID la intrare cerc
 
 // ─── Intersection / Circle tuning ─────────────────────────────────────────────
-#define CIRCLE_ENTRY_BIAS     0.1f   // bias la intrarea in cerc (era INTERSECTION_BIAS)
+#define CIRCLE_ENTRY_BIAS     0.2f   // bias la intrarea in cerc (era INTERSECTION_BIAS)
 #define CIRCLE_ENTRY_TIME_MS  120     // durata bias intrare [ms]
 #define CIRCLE_EXIT_BIAS      0.4f   // bias mai puternic la iesire
 #define CIRCLE_EXIT_TIME_MS   200   // durata bias iesire [ms] — mai lung decat intrare
@@ -52,13 +55,13 @@
 
 // --- Intersection Thresholds
 
-#define LEFT_ZONE 70
-#define RIGHT_ZONE 70
+#define LEFT_ZONE 90
+#define RIGHT_ZONE 90
 #define CENTER_ZONE 90
 
 // ─── Speed scaling ────────────────────────────────────────────────────────────
 #define SPEED_SCALE           0.0002f
-#define MIN_SPEED             0.38f
+#define MIN_SPEED             0.45f
 
 // ── Wall Follow Constants ──────────────────────────────
 #define LOST_CONSECUTIVE_READS    10

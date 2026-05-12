@@ -7,6 +7,9 @@
 // ─── Stare globala ────────────────────────────────────────────────────────────
 static PIDController pid;
 static unsigned int  lastTime = 0;
+static unsigned int  lastTimePID = 0;
+int position = 0;
+double correction = 0;
 
 // ─── Speed scaling ────────────────────────────────────────────────────────────
 // Returneaza viteza redusa in functie de eroarea curenta
@@ -44,15 +47,21 @@ void loop()
 {
     unsigned int now = millis();
     double dt = (now - lastTime) / 10000.0;
-    lastTime  = now;
 
-    int position   = weightedValuePID();
+    position   = weightedValuePID();
+    if(now - lastTimePID > 50){
+        correction = update_PID(&pid, 0, position, dt);
+        lastTimePID = now;
+    }
+    
+
+    lastTime  = now;
 
     // Daca suntem in recuperare (linie pierduta), weightedValuePID() a aplicat
     // deja comenzile motoarelor — iesim fara sa apelam PID
     // (detectam recuperarea: motoarele sunt deja setate in sensors.c)
     // Totusi lasam PID-ul sa ruleze si in recuperare — va mentine integral-ul cald
-    double correction = update_PID(&pid, 0, position, dt);
+    
     float  dynSpeed   = scaledSpeed(correction);
 
     if (correction > -PID_DEADBAND && correction < PID_DEADBAND)
@@ -74,6 +83,6 @@ void loop()
         setPowerR(dynSpeed);
     }
 
-    Serial.println(correction);
-    Serial.println();
+    // Serial.println(correction);
+    // Serial.println();
 }

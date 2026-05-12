@@ -55,14 +55,28 @@ static int isLineLost(void)
     return (total < LOST_LINE_THRESHOLD);
 }
 
-// ─── Detectie intersectie stanga ──────────────────────────────────────────────
+// ─── Detectie intersectie cerc ──────────────────────────────────────────────
 static int isIntersection(void)
 {
-    int leftZone   = (sensor[0] + sensor[1])/2;
     int centerZone = (sensor[2] + sensor[3] + sensor[4])/3;
-    int rightZone  = (sensor[5] + sensor[6])/2;
 
     return centerZone > CENTER_ZONE;
+}
+
+// ─── unghi 90 de grade stanga ──────────────────────────────────────────────
+static int isCornerLeft(void)
+{
+    int leftZone   = (sensor[0] + sensor[1])/2;
+    int rightZone  = (sensor[5] + sensor[6])/2;
+    return leftZone > LEFT_ZONE && rightZone < RIGHT_ZONE;
+}
+
+// ─── unghi 90 de grade dreapta ──────────────────────────────────────────────
+static int isCornerRight(void)
+{
+    int leftZone   = (sensor[0] + sensor[1])/2;
+    int rightZone  = (sensor[5] + sensor[6])/2;
+    return rightZone > RIGHT_ZONE && leftZone < LEFT_ZONE;
 }
 
 // ─── Citire + suma ponderata ──────────────────────────────────────────────────
@@ -112,6 +126,20 @@ int weightedValuePID(void)
 
             setPowerL(BASE_SPEED);
             setPowerR(BASE_SPEED + CIRCLE_ENTRY_BIAS);
+            delay(CIRCLE_ENTRY_TIME_MS);
+            return 0;
+        }
+
+        if (isCornerLeft()){
+            setPowerL(BASE_SPEED - CIRCLE_ENTRY_BIAS);
+            setPowerR(BASE_SPEED + CIRCLE_ENTRY_BIAS);
+            delay(CIRCLE_ENTRY_TIME_MS);
+            return 0;
+        }
+
+        if (isCornerRight()){
+            setPowerL(BASE_SPEED + CIRCLE_ENTRY_BIAS);
+            setPowerR(BASE_SPEED - CIRCLE_ENTRY_BIAS);
             delay(CIRCLE_ENTRY_TIME_MS);
             return 0;
         }
